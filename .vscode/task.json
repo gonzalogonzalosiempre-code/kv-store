@@ -1,0 +1,25 @@
+{
+    "version": "2.0.0",
+    "task": [
+         {
+            "label": "compilar programa",
+            "type": "shell",
+            "command": "g++",
+            "args": [
+                 "-std=c++20",
+                "-g",
+                "-Wall",
+                "-Wextra",
+                "${workspaceFolder}/src/*.cpp",
+                "-I${workspaceFolder}/include",
+                "-o",
+                "${workspaceFolder}/kv-store.exe"
+            ],
+            "group": {
+                "kind": "build",
+                "Isdefault": "true"
+            },
+            "problemMatcher": ["$gcc"]
+         }
+    ]
+}
