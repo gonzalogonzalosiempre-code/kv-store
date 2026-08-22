@@ -1,12 +1,14 @@
 #include <vector>
 #include <string>
+#include <iostream>
+#include <fstream>
 
 struct Nodo {
     std::string Value;
-    int Key;
+    std::string Key;
     Nodo* next;
     //Inicialite Node with Constructor
-    Nodo(int _key, std::string _Value){
+    Nodo(std::string _key, std::string _Value){
         Key = _key;
         Value = _Value;
         next = nullptr;
@@ -15,9 +17,9 @@ struct Nodo {
 
 class HashTable {
     private:
-    std::vector<Nodo*> Buckets(16);
+    std::vector<Nodo*> Buckets;
     //List numbers heads
-    void HashFunction(const std::string& key){
+    int HashFunction(const std::string& key){
       long hash = 0;
       int p = 31; //31 is a prime number; it was chosen because it mixes the numbers perfectly, avoiding collisions—such as with "ROMA," "AMOR," and "RAMO"—that would otherwise yield the exact same number.
       for (char c : key){
@@ -38,7 +40,7 @@ class HashTable {
       if (!Buckets[index])
       {
         //If is the first Value
-        Buckets[index]->next = newNode->Value;
+        Buckets[index] = newNode;
       }
       else
       {
@@ -51,7 +53,7 @@ class HashTable {
     {
       int index = HashFunction(key);
       Nodo* tmp = Buckets[index];
-      while(!tmp == nullptr)
+      while(tmp != nullptr)
       //Search until nullptr is obtained
       {
        if(tmp->Key == key)
@@ -67,20 +69,20 @@ class HashTable {
     void DEL(std::string key)
     {
       int index = HashFunction(key);
-      Node* ptr = Buckets[index];
-      Node* Prev = nullptr;
-      while (!ptr == nullptr)
+      Nodo* ptr = Buckets[index];
+      Nodo* Prev = nullptr;
+      while (ptr != nullptr)
       {
         if (ptr->Key == key)
         {
           std::string Val = ptr->Value;
-          std::string res;
+          char res;
           std::cout<<"You sure Delete "<< Val <<"? y/n"<<std::endl;
           std::cin >> res;
           //Get user response
           if(res == 'y' || res =='Y') 
           {
-           if (Del == nullptr)
+           if (Prev == nullptr)
            {
             //if it is at the top of the list
             Buckets[index] = ptr->next;
@@ -97,8 +99,9 @@ class HashTable {
            std::cout<<"This action is not result"<<std::endl;
           }
         }
-        Del = ptr;
+        Prev = ptr;
         ptr = ptr->next;
+        delete ptr;
       }
     }
   void LOG(const std::string& name){
@@ -108,7 +111,7 @@ class HashTable {
     }
     std::cout<<"=== LOGS IN YOUR PROGRAM ==="<<std::endl;
 
-    std::cout << archivo.rdbuf(); //With rdbuf returning data in efficient RAM blocks for sending to the terminal
+    std::cout << file.rdbuf(); //With rdbuf returning data in efficient RAM blocks for sending to the terminal
 
     std::cout<< "=== ENDING OF LOGS ==="<<std::endl;
 
