@@ -1,6 +1,6 @@
 {
     "version": "2.0.0",
-    "task": [
+    "tasks": [
          {
             "label": "compilar programa",
             "type": "shell",
@@ -17,7 +17,7 @@
             ],
             "group": {
                 "kind": "build",
-                "Isdefault": "true"
+                "isDefault": true
             },
             "problemMatcher": ["$gcc"]
          }

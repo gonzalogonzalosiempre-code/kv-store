@@ -1,6 +1,12 @@
 #include <iostream>
+#include "Hash.h"
 
 int main(void){
-    std::cout<<"Hola Mi Programa inicia"<<std::endl;
+    HashTable tabla;
+    //tabla.SET("Perro","Labrador");
+    //tabla.SET("Gato","michi");
+    tabla.GET("Perro");
+    tabla.GET("Gato");
+    //tabla.SET("Perro", "Pastor Aleman");
     return 0;
 }
