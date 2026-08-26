@@ -1,5 +1,8 @@
 #include <iostream>
 #include "Hash.h"
+#include <string>
+#include <vector>
+#include <sstream>
 #include <winsock2.h> //Librery por win
 #include <ws2tcpip.h> //Librery for tcp
 #pragma comment(lib, "ws2_32.lib") //Vinculed librery of winsock.
@@ -25,15 +28,23 @@ std::vector<std::string> ParserCommand(const std::string& Line){
 }
 
 std::string Eject(HashTable& tabla,const std::vector<std::string>& Commands){
-  if (Commands[0] == "SET") tabla.SET(Commands[1], Commands[2]), return "OK\n";
-  if (Commands[0] == "DEL") {
-    tabla.DEL(Commands[1]);
-    return "OK\n";
-  }
-  if (Commands[0] == "GET") return std::cout<< tabla.DEL(Commands[1]) <<;
+  if (Commands[0] == "SET") return std::cout<< tabla.SET(Commands[1], Commands[2]);
+  else if (Commands[0] == "DEL") return std::cout<< tabla.DEL(Commands[1]);
+  else if (Commands[0] == "GET") return std::cout<< tabla.GET(Commands[1]);
+  else return "ERR unknow command\n";
 }
 
-int main(void){
-    
-    return 0;
+void StartServer(){
+  WSADATA wsadata;
+
+  WORD model = MAKEWORD(2,2);
+
+  int Start = WSAStartup(model, &wsadata);
+
+  if (Start != 0){
+    //if not start.
+  }
+
+  //...Here come WSAStartup, socket, bind, listening, Accept, and the read loop.
+
 }
