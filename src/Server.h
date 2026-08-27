@@ -1,3 +1,5 @@
+#pragma once
+
 #include <iostream>
 #include "Hash.h"
 #include <string>
@@ -28,9 +30,9 @@ std::vector<std::string> ParserCommand(const std::string& Line){
 }
 
 std::string Eject(HashTable& tabla,const std::vector<std::string>& Commands){
-  if (Commands[0] == "SET") return std::cout<< tabla.SET(Commands[1], Commands[2]);
-  else if (Commands[0] == "DEL") return std::cout<< tabla.DEL(Commands[1]);
-  else if (Commands[0] == "GET") return std::cout<< tabla.GET(Commands[1]);
+  if (Commands[0] == "SET") return tabla.SET(Commands[1], Commands[2]);
+  else if (Commands[0] == "DEL") return tabla.DEL(Commands[1]);
+  else if (Commands[0] == "GET") return tabla.GET(Commands[1]);
   else return "ERR unknow command\n";
 }
 
@@ -42,9 +44,75 @@ void StartServer(){
   int Start = WSAStartup(model, &wsadata);
 
   if (Start != 0){
-    //if not start.
+    std::cout << "ERR inicialiting Code:" << Start <<std::endl;
+    return;
+  }
+  
+  SOCKET socketlisten = socket(AF_INET, SOCK_STREAM,0);
+
+  if (socketlisten == INVALID_SOCKET){
+    std::cout <<"ERR socket in" << WSAGetLastError() <<std::endl;
+    WSACleanup();
+    return;
+  }
+  sockaddr_in Serveradd;
+  Serveradd.sin_family = AF_INET;
+  Serveradd.sin_addr.s_addr = INADDR_ANY;
+  Serveradd.sin_port = htons(8080);
+
+  int Bindresult = bind(socketlisten, (sockaddr*)&Serveradd, sizeof(Serveradd));
+
+  if (Bindresult != 0){
+   std::cout <<"ERR socket in" << WSAGetLastError() <<std::endl;
+   closesocket(socketlisten);
+   WSACleanup();
+   return;
   }
 
-  //...Here come WSAStartup, socket, bind, listening, Accept, and the read loop.
+  int ListenResult = listen(socketlisten, SOMAXCONN);
 
+  if (ListenResult != 0){
+    std::cout<<"ERR socket in" << WSAGetLastError() <<std::endl;
+    closesocket(socketlisten);
+    WSACleanup();
+    return;
+  }
+
+  HashTable table;
+
+
+ while (true){
+
+  std::cout<<"Waiting.." <<std::endl;
+
+  SOCKET SocketClient = accept(socketlisten, nullptr,nullptr);
+
+  if (SocketClient == INVALID_SOCKET){
+   std::cout<<"ERR socket in"<< WSAGetLastError() <<std::endl;
+   continue;
+  }
+
+  char buff[1024];
+  while (true){
+
+  int Numbersbuff = recv(SocketClient, buff, sizeof(buff) - 1, 0);
+
+  if (Numbersbuff <= 0) break;
+
+  buff[Numbersbuff] = '\0';
+
+  std::string line(buff);
+
+  std::vector<std::string> Commands = ParserCommand(line);
+
+  std::string res = Eject(table, Commands);
+
+  send(SocketClient, res.c_str(), res.length(), 0);
+  }
+
+  std::cout<<"Client is out, Program is closed.."<<std::endl;
+
+  closesocket(SocketClient);
+
+  }
 }
