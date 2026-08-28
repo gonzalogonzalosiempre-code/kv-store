@@ -13,7 +13,8 @@
                 "${workspaceFolder}/src/*.cpp",
                 "-I${workspaceFolder}/include",
                 "-o",
-                "${workspaceFolder}/kv-store.exe"
+                "${workspaceFolder}/kv-store.exe",
+                "-lws2_32"
             ],
             "group": {
                 "kind": "build",

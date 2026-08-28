@@ -1,3 +1,5 @@
+#pragma once // Include ONE time this code for main.
+
 #include <vector>
 #include <string>
 #include <iostream>
@@ -125,10 +127,11 @@ class HashTable {
       logFile.open("kv.log", std::ios::app); //Note open with std::ios::app This ensures that the existing content in kv.log isn't overwritten, but rather that new data is written into the existing file, allowing for reconstruction.
     };
 
-    void SET(std::string key, std::string Value)
+    std::string SET(std::string key, std::string Value)
     {
      InsertSet(key,Value); //Calling the function for task
      writeLog("SET",key,Value);
+     return "OK\n";
     }
 
     std::string GET(std::string key)

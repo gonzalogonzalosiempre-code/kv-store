@@ -24,6 +24,10 @@ std::vector<std::string> ParserCommand(const std::string& Line){
         }
         else if (tmp == "DEL" || tmp == "GET"){
           tmp = res.substr(i + 1);
+          size_t end = tmp.find_last_not_of("\r\n");
+          if (end != std::string::npos) {
+           tmp = tmp.substr(0, end + 1);
+          }
           Commands.push_back(tmp);
         }
      return Commands;
