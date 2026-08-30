@@ -1,10 +1,9 @@
-#pragma once // Include ONE time this code for main.
-
 #include <vector>
 #include <string>
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <mutex>
 
 struct Nodo {
     std::string Value;
@@ -20,6 +19,7 @@ struct Nodo {
 
 class HashTable {
     private:
+    std::mutex mtx;
     std::ofstream logFile; //Let's open a reserved object for a file stream for writing.
     std::ifstream logFileR; //We open another one in read-only mode.
 
@@ -129,6 +129,7 @@ class HashTable {
 
     std::string SET(std::string key, std::string Value)
     {
+     std::lock_guard<std::mutex> lock(mtx);
      InsertSet(key,Value); //Calling the function for task
      writeLog("SET",key,Value);
      return "OK\n";
@@ -136,6 +137,7 @@ class HashTable {
 
     std::string GET(std::string key)
     {
+      std::lock_guard<std::mutex> lock(mtx);
       int index = HashFunction(key);
       Nodo* tmp = Buckets[index];
       while(tmp != nullptr)
@@ -152,6 +154,7 @@ class HashTable {
       return "Not Found\n";
     }
     std::string DEL(std::string key){
+      std::lock_guard<std::mutex> lock(mtx);
       bool Succes = InsertDel(key);
       if (Succes){
         writeLog("DEL",key,"");

@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include <sstream>
+#include <thread>
 #include <winsock2.h> //Librery por win
 #include <ws2tcpip.h> //Librery for tcp
 #pragma comment(lib, "ws2_32.lib") //Vinculed librery of winsock.
@@ -39,7 +40,30 @@ std::string Eject(HashTable& tabla,const std::vector<std::string>& Commands){ //
   else if (Commands[0] == "GET") return tabla.GET(Commands[1]);
   else return "ERR unknow command\n";
 }
+void AttendClient(SOCKET server, HashTable& table){
+       while (true){ //While for waiting clients
 
+      char buff[1024]; //Buf por recv
+
+      int Numbersbuff = recv(server, buff, sizeof(buff) - 1, 0);//Recive the buff for action
+
+      if (Numbersbuff <= 0) break;//Is not action, break
+
+      buff[Numbersbuff] = '\0';
+
+      std::string line(buff);
+
+      std::vector<std::string> Commands = ParserCommand(line);
+
+      std::string res = Eject(table, Commands);
+
+      send(server, res.c_str(), res.length(), 0); //Send commands for client
+      }
+
+      std::cout<<"Client is out, Program is closed.."<<std::endl;
+
+  closesocket(server);//Close socketClient
+  }
 void StartServer(){
   WSADATA wsadata;  //Notice how we use `WSADATA` here; it is used to create—so to speak—the structure that holds the specifications for the Winsock program we are going to use, which is what Winsock requires.
 
@@ -90,33 +114,15 @@ void StartServer(){
   std::cout<<"Waiting.." <<std::endl; //Message por waiting for clients
 
   SOCKET SocketClient = accept(socketlisten, nullptr,nullptr);//Accept is what determines whether the client gets through; it accepts the client and creates a new socket specifically for them.
-
+  
   if (SocketClient == INVALID_SOCKET){
    std::cout<<"ERR socket in"<< WSAGetLastError() <<std::endl;
    continue;
   }
-
-  char buff[1024]; //Buf por recv 
-  while (true){ //While for waiting clients
-
-  int Numbersbuff = recv(SocketClient, buff, sizeof(buff) - 1, 0);//Recive the buff for action
-
-  if (Numbersbuff <= 0) break;//Is not action, break
-
-  buff[Numbersbuff] = '\0';
-
-  std::string line(buff);
-
-  std::vector<std::string> Commands = ParserCommand(line);
-
-  std::string res = Eject(table, Commands);
-
-  send(SocketClient, res.c_str(), res.length(), 0); //Send commands for client
-  }
-
-  std::cout<<"Client is out, Program is closed.."<<std::endl;
-
-  closesocket(SocketClient);//Close socketClient
+  std::cout << "Connect.." <<std::endl;
+  std::jthread client(AttendClient, SocketClient, std::ref(table));
+  client.detach();
+  
 
   //This is Winsock, which enables network communication between a client and a server; `bind` brings the socket to life by assigning it a place on the network, while the other functions facilitate program communication. However, the implementation still needs refinement—specifically using threads and improving it to handle multiple clients.
 
