@@ -14,10 +14,19 @@ std::vector<std::string> ParserCommand(const std::string& Line){ //First, we cre
         std::string res = Line; //res = Line, for using with substr and append to tmp
         std::vector<std::string> Commands;
         size_t i = res.find_first_of(' ');
+        if (i == std::string::npos){
+         Commands.push_back("ERR unknow command\n");
+         return Commands;
+        }
         std::string tmp = res.substr(0, i); // Get string for Command
         Commands.push_back(tmp); //If Set
         if (tmp == "SET"){
             size_t key = res.find(' ', i + 1);
+            if (key == std::string::npos) {
+              Commands.clear();
+              Commands.push_back("ERR unknow command\n");
+              return Commands;
+            }
             tmp = res.substr(i + 1, key - i - 1);
             Commands.push_back(tmp);
             tmp = res.substr(key + 1);
