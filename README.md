@@ -9,8 +9,8 @@ Este proyecto se construyó como ejercicio de aprendizaje profundo de sistemas, 
 
 ## Demo en video
 
-- 🎥 **[Explicación completa (30 min)]()** — recorrido detallado de arquitectura, decisiones de diseño y funcionamiento interno.
-- 🎥 **[Demo rápida (9 min)]()** — explicación resumida y prueba en vivo del sistema funcionando.
+- 🎥 **[https://drive.google.com/file/d/170njPbjyYsHxDt4Lt_TCv8GfifABH8Yt/view?usp=sharing]()** — recorrido detallado de arquitectura, decisiones de diseño y funcionamiento interno.
+- 🎥 **[https://youtu.be/m4UPlZv-a5E]()** — explicación resumida y prueba en vivo del sistema funcionando.
 
 ---
 
